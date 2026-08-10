@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Rol {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @unique // 'dueno' | 'cajero'
+  usuarios Usuario[]
+}
+
+model Usuario {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  email         String   @unique
+  password_hash String
+  rolId         Int
+  rol           Rol      @relation(fields: [rolId], references: [id])
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  ventas               Venta[]
+  abonos               Abono[]
+  movimientosInventario MovimientoInventario[]
+}
+
+model Categoria {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  emoji     String     @default("📦")
+  color     String     @default("#6E7169")
+  orden     Int        @default(0)
+  productos Producto[]
+}
+
+model Producto {
+  id             Int       @id @default(autoincrement())
+  nombre         String
+  categoriaId    Int
+  categoria      Categoria @relation(fields: [categoriaId], references: [id])
+  precio         Decimal   // precio base, SIN ITBIS
+  costo          Decimal   @default(0)
+  unidad         String    @default("unidad") // 'unidad'|'libra'|'litro'
+  permiteDetalle Boolean   @default(false)    // venta fraccionada
+  stock          Decimal   @default(0)
+  stockMinimo    Decimal   @default(0)
+  sku            String?
+  esFrecuente    Boolean   @default(false)
+  emoji          String?
+  imagenUrl      String?
+  activo         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now())
+
+  ventaItems            VentaItem[]
+  movimientosInventario MovimientoInventario[]
+
+  @@index([nombre])
+}
+
+model Cliente {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  telefono      String?
+  limiteCredito Decimal  @default(0) // 0 = sin límite
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  ventas Venta[]
+  abonos Abono[]
+}
+
+model Venta {
+  id            Int      @id @default(autoincrement())
+  fecha         DateTime @default(now())
+  usuarioId     Int
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id])
+  clienteId     Int?
+  cliente       Cliente? @relation(fields: [clienteId], references: [id])
+  tipoPago      String   // 'efectivo'|'fiado'
+  subtotal      Decimal
+  itbis         Decimal
+  total         Decimal
+  montoRecibido Decimal? // solo efectivo
+  cambio        Decimal? // vuelto
+  estado        String   @default("completada") // 'completada'|'anulada'
+  numeroFactura String?
+  ncf           String?
+  createdAt     DateTime @default(now())
+
+  items  VentaItem[]
+  abonos Abono[]
+}
+
+model VentaItem {
+  id             Int      @id @default(autoincrement())
+  ventaId        Int
+  venta          Venta    @relation(fields: [ventaId], references: [id], onDelete: Cascade)
+  productoId     Int
+  producto       Producto @relation(fields: [productoId], references: [id])
+  nombre         String   // snapshot
+  precioUnitario Decimal
+  cantidad       Decimal
+  importe        Decimal
+}
+
+model Abono {
+  id        Int      @id @default(autoincrement())
+  clienteId Int
+  cliente   Cliente  @relation(fields: [clienteId], references: [id])
+  ventaId   Int?
+  venta     Venta?   @relation(fields: [ventaId], references: [id])
+  monto     Decimal
+  fecha     DateTime @default(now())
+  usuarioId Int
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model MovimientoInventario {
+  id         Int      @id @default(autoincrement())
+  productoId Int
+  producto   Producto @relation(fields: [productoId], references: [id])
+  tipo       String   // 'venta'|'ajuste'|'entrada'
+  cantidad   Decimal  // negativo = salida
+  referencia String?  // ej. 'venta #123'
+  usuarioId  Int?
+  usuario    Usuario? @relation(fields: [usuarioId], references: [id])
+  fecha      DateTime @default(now())
+}

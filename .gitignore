@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Entorno y secretos
+.env
+
+# Base de datos local
+*.db
+backend/prisma/dev.db
+dev.db
+
+# Herramientas de IA / editores
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Build y temporales
+dist/
+build/
+*.log
+.DS_Store
+cleanup.ts
