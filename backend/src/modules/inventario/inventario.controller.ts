@@ -20,7 +20,7 @@ export const getAlertasStock = async (req: Request, res: Response): Promise<void
       }
     });
 
-    const filtrados = alertas.filter(p => p.stock <= p.stockMinimo);
+    const filtrados = alertas.filter((p: any) => p.stock <= p.stockMinimo);
 
     res.json({ data: filtrados });
   } catch (error) {
@@ -96,10 +96,10 @@ export const ajustarStock = async (req: Request, res: Response): Promise<void> =
     }
 
     // Ejecutar en transacción para asegurar integridad
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.producto.update({
         where: { id: Number(id) },
-        data: { stock: producto.stock + Number(cantidad) }
+        data: { stock: Number(producto.stock) + Number(cantidad) }
       });
 
       await tx.movimientoInventario.create({

@@ -8,7 +8,7 @@ export class VentaService {
       throw new Error('La venta debe tener al menos un ítem');
     }
 
-    return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx: any) => {
       let subtotal = 0;
 
       for (const item of items) {

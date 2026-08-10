@@ -151,10 +151,10 @@ export const getRecomendacionesRestock = async (req: Request, res: Response): Pr
       
       let diasRestantes = 999;
       if (ventasDiarias > 0) {
-        diasRestantes = p.stock / ventasDiarias;
+        diasRestantes = Number(p.stock) / ventasDiarias;
       }
 
-      if (p.stock <= p.stockMinimo || (diasRestantes < 3 && ventasDiarias > 0)) {
+      if (Number(p.stock) <= Number(p.stockMinimo) || (diasRestantes < 3 && ventasDiarias > 0)) {
         recomendaciones.push({
           id: p.id,
           nombre: p.nombre,
@@ -162,7 +162,7 @@ export const getRecomendacionesRestock = async (req: Request, res: Response): Pr
           stockMinimo: p.stockMinimo,
           ventasDiarias,
           diasRestantes,
-          urgente: diasRestantes < 1 || p.stock <= 0
+          urgente: diasRestantes < 1 || Number(p.stock) <= 0
         });
       }
     }
@@ -246,8 +246,8 @@ export const getInventarioInmovilizado = async (req: Request, res: Response): Pr
     const productosConVenta = new Set(itemsVendidos30Dias.map(i => i.productoId));
 
     const inmovilizados = productos
-      .filter(p => !productosConVenta.has(p.id))
-      .map(p => ({
+      .filter((p: any) => !productosConVenta.has(p.id))
+      .map((p: any) => ({
         id: p.id,
         nombre: p.nombre,
         stock: p.stock,

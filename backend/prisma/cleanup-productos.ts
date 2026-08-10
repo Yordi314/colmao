@@ -32,7 +32,7 @@ async function main() {
       // Sumar stock real (consolidar ambos inventarios)
       await prisma.producto.update({
         where: { id: prodRetener.id },
-        data: { stock: prodRetener.stock + prodEliminar.stock }
+        data: { stock: Number(prodRetener.stock) + Number(prodEliminar.stock) }
       });
 
       // Borrar el producto duplicado
