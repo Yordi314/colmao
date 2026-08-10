@@ -1,7 +1,5 @@
 # Colmao 🛒
 
----
-
 ## 👥 Equipo
 - Yordi Polanco Pujols
 - Yohanna Diaz
