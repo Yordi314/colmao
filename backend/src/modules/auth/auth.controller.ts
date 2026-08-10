@@ -27,9 +27,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error('CRITICAL: JWT_SECRET environment variable is missing.');
+    }
+
     const token = jwt.sign(
       { id: usuario.id, email: usuario.email, rol: usuario.rol.nombre },
-      process.env.JWT_SECRET || 'secret',
+      process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
 
@@ -68,9 +72,13 @@ export const loginDemo = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error('CRITICAL: JWT_SECRET environment variable is missing.');
+    }
+
     const token = jwt.sign(
       { id: usuario.id, email: usuario.email, rol: usuario.rol.nombre },
-      process.env.JWT_SECRET || 'secret',
+      process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
 

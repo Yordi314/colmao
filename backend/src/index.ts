@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import authRoutes from './modules/auth/auth.routes';
 import productosRoutes from './modules/productos/productos.routes';
 import ventasRoutes from './modules/ventas/ventas.routes';
@@ -29,10 +30,26 @@ app.use('/api', fiadoRoutes);
 app.use('/api', inventarioRoutes);
 app.use('/api', dashboardRoutes);
 
-// Manejador 404
-app.use((req, res) => {
+// API 404 handler
+app.use('/api/*', (req, res) => {
   res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Ruta no encontrada' } });
 });
+
+// En producción, servir frontend compilado
+if (process.env.NODE_ENV === 'production') {
+  const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendDistPath));
+
+  // Catch-all para React Router (SPA)
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Manejador 404 para desarrollo (si no es API ni estático)
+  app.use((req, res) => {
+    res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Ruta no encontrada' } });
+  });
+}
 
 // Manejador de errores global
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
