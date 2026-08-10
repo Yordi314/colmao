@@ -1,5 +1,14 @@
 # Colmao 🛒
 
+---
+
+## 👥 Equipo
+- Yordi Polanco Pujols
+- Yohanna Diaz
+- Erick Betances
+
+---
+
 **El punto de venta hecho para el colmado dominicano.**
 
 Colmao es un sistema web full-stack de punto de venta y gestión, diseñado
