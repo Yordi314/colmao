@@ -24,7 +24,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg font-sans selection:bg-primary/20">
+    <div className="min-h-screen bg-bg font-sans selection:bg-primary/20 flex flex-col">
       {/* Header */}
       <header className="container mx-auto px-6 py-6 flex justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <main className="relative pt-12 pb-24 lg:pt-20 lg:pb-32 overflow-hidden">
+      <main className="relative pt-12 pb-24 lg:pt-20 lg:pb-32 overflow-hidden flex-grow">
         {/* Background shapes */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10"></div>
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/5 rounded-full blur-3xl -z-10"></div>
