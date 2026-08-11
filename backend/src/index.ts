@@ -31,7 +31,7 @@ app.use('/api', inventarioRoutes);
 app.use('/api', dashboardRoutes);
 
 // API 404 handler
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Ruta no encontrada' } });
 });
 
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(frontendDistPath));
 
   // Catch-all para React Router (SPA)
-  app.get('*', (req, res) => {
+  app.get(/.*/, (req, res) => {
     res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 } else {
@@ -59,6 +59,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor backend escuchando en http://localhost:${PORT}`);
+app.listen(Number(PORT), '0.0.0.0', () => {
+  console.log(`🚀 Servidor backend escuchando en puerto ${PORT}`);
 });
